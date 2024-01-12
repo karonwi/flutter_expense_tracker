@@ -69,6 +69,9 @@ class _ExpensesState extends State<Expenses> {
 
   @override
   Widget build(BuildContext context) {
+    // the reason for the below is so that we can know the width
+    //and implement landscape mode when auto rotated
+    final width = MediaQuery.of(context).size.width;
     Widget mainContent = const Center(
       child: Text('No expenses found. Start adding some!'),
     );
@@ -83,8 +86,21 @@ class _ExpensesState extends State<Expenses> {
           IconButton(
               onPressed: _openAddExpenseOverlay, icon: const Icon(Icons.add))
         ]),
-        body: Column(
-          children: [Chart(expenses: _listOfExpense), Expanded(child: mainContent)],
-        ));
+        body: width < 600
+            ? Column(
+                children: [
+                  Chart(expenses: _listOfExpense),
+                  Expanded(child: mainContent)
+                ],
+              )
+            : Row(
+                children: [
+                  //expanded is usually the solution when you have widgets
+                  //nested into each other that do not work well due to maybe
+                  //Width.inifity from the parent and the child
+                  Expanded(child: Chart(expenses: _listOfExpense)),
+                  Expanded(child: mainContent)
+                ],
+              ));
   }
 }
